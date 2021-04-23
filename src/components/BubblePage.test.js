@@ -1,15 +1,49 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import BubblePage from "./BubblePage";
+import { fetchBubbles as mockFetchBubbles } from "../fetchBubbles";
 
-const { findByTestId } = screen;
+jest.mock("../fetchBubbles");
 
-test("Renders BubblePage without errors", () => {
+const testColors = {
+	data: [
+		{
+			color: "aliceblue",
+			code: {
+				hex: "#f0f8ff",
+			},
+			id: 1,
+		},
+		{
+			color: "limegreen",
+			code: {
+				hex: "#99ddbc",
+			},
+			id: 2,
+		},
+		{
+			color: "aqua",
+			code: {
+				hex: "#00ffff",
+			},
+			id: 3,
+		},
+	],
+};
+
+const { findAllByTestId } = screen;
+
+test("Renders BubblePage without errors", async () => {
+	mockFetchBubbles.mockResolvedValue(testColors);
 	render(<BubblePage />);
 });
 
 test("Fetches data and renders the bubbles on mounting", async () => {
-	const { rerender, debug } = render(<BubblePage />);
+	mockFetchBubbles.mockResolvedValue(testColors);
+
+	render(<BubblePage />);
+
+	expect(await findAllByTestId("color")).toHaveLength(3);
 });
 
 //Task List
